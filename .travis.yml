@@ -1,0 +1,22 @@
+---
+language: python
+python: "2.7"
+
+install:
+  # Install Ansible.
+  - pip install ansible
+  # Add ansible.cfg to pick up roles path.
+  - echo "[default]\nroles_path = ." > ansible.cfg
+
+script:
+  # Download the role from Ansible Galaxy.
+  - ansible-galaxy install -r requirements.yml -p roles
+  # Test the syntax of the playbook.
+  - ansible-playbook -i inventory test.yml --syntax-check
+
+notifications:
+  email:
+    recipients:
+      - chrobert@redhat.com
+    on_success: never # default: change
+    on_failure: always # default: always

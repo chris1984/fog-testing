@@ -7,6 +7,7 @@ location_id: 2
 org_id: 1
 cr_id: 1
 cp_id: 1
+ptable_id: 100
 fog_version:
 fogpatch_url:
 revert_vm:

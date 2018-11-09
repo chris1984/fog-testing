@@ -80,7 +80,7 @@
       chdir: /root
       creates: /root/fog-testing/test2
 
-  - name: Sleep for 567 seconds while 2 VM build completes
+  - name: Sleep for 567 seconds while 2 VM builds complete
     wait_for: timeout=567
     delegate_to: localhost
 
@@ -96,44 +96,44 @@
       chdir: /root
       creates: /root/fog-testing/test4
 
-  - name: Sleep for 567 seconds while 2 VM build completes
+  - name: Sleep for 567 seconds while 2 VM builds complete
     wait_for: timeout=567
     delegate_to: localhost
 
   - name: Bootdisk | Normal VM creation with single HDD on Local Datastore
-    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test5 --hostgroup-id {{ hostgroup_id }} --location-id {{ location_id }} --organization-id {{ org_id }} --compute-resource-id {{ cr_id }} --compute-profile-id {{ cp_id }} --compute-attributes start=1 --provision-method bootdisk --medium-id 10 --partition-table-id 100
+    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test5 --hostgroup-id {{ hostgroup_id }} --location-id {{ location_id }} --organization-id {{ org_id }} --compute-resource-id {{ cr_id }} --compute-profile-id {{ cp_id }} --compute-attributes start=1 --provision-method bootdisk --medium-id {{ medium_id }} --partition-table-id {{ ptable_id }}
     args:
       chdir: /root
       creates: /root/fog-testing/test5
 
   - name: Bootdisk | Normal VM creation with added HDD on Local Datastore
-    command: host create --name test6 --hostgroup-id 1 --location-id 2 --organization-id 1 --compute-resource-id 1 --compute-profile-id 1 --compute-attributes start=1 --provision-method bootdisk --medium-id 10 --partition-table-id 100 --volume name=harddisk1,datastore=Local-Ironforge,size_gb=10,thin=true,eager_zero=false,mode=persistent --volume name=harddisk2,datastore=Local-Ironforge,size_gb=10,thin=true,eager_zero=false,mode=persistent
+    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test6 --hostgroup-id {{ hostgroup_id }} --location-id {{ location_id }} --organization-id {{ org_id }} --compute-resource-id {{ cr_id }} --compute-profile-id {{ cp_id }} --compute-attributes start=1 --provision-method bootdisk --medium-id {{ medium_id }} --partition-table-id {{ ptable_id }} --volume name=harddisk1,datastore=Local-Ironforge,size_gb=10,thin=true,eager_zero=false,mode=persistent --volume name=harddisk2,datastore=Local-Ironforge,size_gb=10,thin=true,eager_zero=false,mode=persistent
     args:
       chdir: /root
       creates: /root/fog-testing/test6
 
-  - name: Sleep for 567 seconds while 2 VM build completes
+  - name: Sleep for 567 seconds while 2 VM builds complete
     wait_for: timeout=567
     delegate_to: localhost
 
   - name: Bootdisk | Normal VM creation with single HDD on Storage Pod
-    command: host create --name test7 --hostgroup-id 1 --location-id 2 --organization-id 1 --compute-resource-id 1 --compute-profile-id 1 --compute-attributes start=1 --provision-method bootdisk --medium-id 10 --partition-table-id 100 --volume name=harddisk1,storage_pod=Synology-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent
+    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test7 --hostgroup-id {{ hostgroup_id }} --location-id {{ location_id }} --organization-id {{ org_id }} --compute-resource-id {{ cr_id }} --compute-profile-id {{ cp_id }} --compute-attributes start=1 --provision-method bootdisk --medium-id {{ medium_id }} --partition-table-id {{ ptable_id }} --volume name=harddisk1,storage_pod=Synology-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent
     args:
       chdir: /root
       creates: /root/fog-testing/test7
 
   - name: Bootdisk | Normal VM creation with added HDD on Storage Pod
-    command: host create --name test8 --hostgroup-id 1 --location-id 2 --organization-id 1 --compute-resource-id 1 --compute-profile-id 1 --compute-attributes start=1 --provision-method bootdisk --medium-id 10 --partition-table-id 100 --volume name=harddisk1,storage_pod=Synology-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent --volume name=harddisk2,datastore=Local-Ironforge,size_gb=10,thin=true,eager_zero=false,mode=persistent
+    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test8 --hostgroup-id {{ hostgroup_id }} --location-id {{ location_id }} --organization-id {{ org_id }} --compute-resource-id {{ cr_id }} --compute-profile-id {{ cp_id }} --compute-attributes start=1 --provision-method bootdisk --medium-id {{ medium_id }} --partition-table-id {{ ptable_id }} --volume name=harddisk1,storage_pod=Synology-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent --volume name=harddisk2,datastore=Local-Ironforge,size_gb=10,thin=true,eager_zero=false,mode=persistent
     args:
       chdir: /root
       creates: /root/fog-testing/test8
 
-  - name: Sleep for 567 seconds while 2 VM build completes
+  - name: Sleep for 567 seconds while 2 VM builds complete
     wait_for: timeout=567
     delegate_to: localhost
 
   - name: Network | Normal VM creation with NIC in portgroup on Distributed Switch with VLAN
-    command: host create --name test9 --hostgroup-id 1 --location-id 2 --organization-id 1 --compute-resource-id 1 --compute-profile-id 1 --compute-attributes start=0,cluster=SysMgmt_vMotion,resource_pool=Resources --interface compute_type=VirtualVmxnet3,compute_network=VLAN-Test --volume name=harddisk1,storage_pod=Synology-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent
+    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test9 --hostgroup-id {{ hostgroup_id }} --location-id {{ location_id }} --organization-id {{ org_id }} --compute-resource-id {{ cr_id }} --compute-profile-id {{ cp_id }} --compute-attributes start=0,cluster=SysMgmt_vMotion,resource_pool=Resources --interface compute_type=VirtualVmxnet3,compute_network=VLAN-Test --volume name=harddisk1,storage_pod=Synology-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent
     args:
       chdir: /root
       creates: /root/fog-testing/test9
@@ -143,7 +143,7 @@
     delegate_to: localhost
 
   - name: Network | Normal VM creation with NIC in portgroup on Distributed Switch
-    command: host create --name test10 --hostgroup-id 1 --location-id 2 --organization-id 1 --compute-resource-id 1 --compute-profile-id 1 --compute-attributes start=0,cluster=SysMgmt_vMotion,resource_pool=Resources --interface compute_type=VirtualVmxnet3,compute_network=CEE_VM_Network --volume name=harddisk1,storage_pod=Synology-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent
+    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test10 --hostgroup-id {{ hostgroup_id }} --location-id {{ location_id }} --organization-id {{ org_id }} --compute-resource-id {{ cr_id }} --compute-profile-id {{ cp_id }} --compute-attributes start=0,cluster=SysMgmt_vMotion,resource_pool=Resources --interface compute_type=VirtualVmxnet3,compute_network=CEE_VM_Network --volume name=harddisk1,storage_pod=Synology-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent
     args:
       chdir: /root
       creates: /root/fog-testing/test10

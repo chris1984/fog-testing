@@ -1,0 +1,11 @@
+---
+# defaults file for chris1984.fog-testing
+hammer_user: admin
+hammer_password: changeme
+hostgroup_id: 1
+location_id: 2
+org_id: 1
+cr_id: 1
+cp_id: 1
+fog_version:
+fogpatch_url:

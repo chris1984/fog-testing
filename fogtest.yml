@@ -1,0 +1,8 @@
+---
+- name: Start fog-vsphere regression testing
+  hosts: fogtest
+  become: true
+  remote_user: root
+
+  roles:
+    - chris1984.fog-testing

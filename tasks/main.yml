@@ -1,0 +1,112 @@
+---
+# tasks file for chris1984.fog-testing
+# 567 seconds from vm creation to reboot for PXE/Bootdisk
+# 621 seconds from vm creation to reboot for image
+
+  - name: Put Foreman SELinux into permissive
+    selinux:
+      policy: targeted
+      state: permissive
+
+  - name: Grab bootdisk hammer-cli-foreman patch
+    get_url:
+      dest: /root/hammer.patch
+      url: https://github.com/chris1984/hammer-cli-foreman/commit/a5734584598433f4d7071abc1b2b9fc871a2698b.patch
+
+  - name: Apply patch to hammer-cli-foreman
+    patch:
+      src: /root/hammer.patch
+      remote_src: yes
+      dest: /opt/theforeman/tfm/root/usr/share/gems/gems/hammer_cli_foreman-0.16.pre.develop/lib/hammer_cli_foreman/hosts/common_update_options.rb
+      strip: 1
+
+  - name: Downloading fog-vsphere patch for testing
+    get_url:
+      dest: /root/fog.patch
+      url: "{{ fogpatch_url }}"
+    when: fogpatch_url
+
+  - name: Appling /root/fog.patch to fog-vsphere for testing
+    patch:
+      src: /root/fog.patch
+      remote_src: yes
+      strip: 1
+      basedir: /opt/theforeman/tfm/root/usr/share/gems/gems/{{ fog_version }}/
+    when: fog_version
+
+  - name: Restart Katello/Foreman services
+    command: foreman-maintain service restart
+    args:
+      chdir: /root
+    no_log: True
+    changed_when: True
+
+  - name: Wait 60 seconds for services to be fully up
+    wait_for: timeout=60
+    delegate_to: localhost
+
+  - name: Generate new API cache data
+    command: foreman-rake apipie:cache
+    args:
+      chdir: /root
+    no_log: True
+    changed_when: True
+
+  - name: Check and make sure services are up
+    command: hammer ping
+    register: hping
+    failed_when: hping.rc == 1
+
+  - name: PXE | Normal VM creation with single HDD on Local Datastore
+    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test1 --hostgroup-id {{ hostgroup_id }} --location-id {{ location_id }} --organization-id {{ org_id }} --compute-resource-id {{ cr_id }} --compute-profile-id {{ cp_id }} --compute-attributes start=1
+
+  - name: PXE | Normal VM creation with added HDD on Local Datastore
+    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test2 --hostgroup-id {{ hostgroup_id }} --location-id {{ location_id }} --organization-id {{ org_id }} --compute-resource-id {{ cr_id }} --compute-profile-id {{ cp_id }} --compute-attributes start=1 --volume name=harddisk1,datastore=Local-Ironforge,size_gb=10,thin=true,eager_zero=false,mode=persistent --volume name=harddisk2,datastore=Local-Ironforge,size_gb=10,thin=true,eager_zero=false,mode=persistent
+  
+  - name: sleep for 567 seconds while 2 VM build completes
+    wait_for: timeout=567
+    delegate_to: localhost
+
+  - name: PXE | Normal VM creation with single HDD on Storage Pod
+    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test3 --hostgroup-id {{ hostgroup_id }} --location-id {{ location_id }} --organization-id {{ org_id }} --compute-resource-id {{ cr_id }} --compute-profile-id {{ cp_id }} --compute-attributes start=1 --volume name=harddisk1,storage_pod=Synology-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent
+
+  - name: PXE | Normal VM creation with added HDD on Storage Pod
+    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test4 --hostgroup-id {{ hostgroup_id }} --location-id {{ location_id }} --organization-id {{ org_id }} --compute-resource-id {{ cr_id }} --compute-profile-id {{ cp_id }} --compute-attributes start=1 --volume name=harddisk1,storage_pod=Synology-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent --volume name=harddisk2,storage_pod=Synology-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent
+
+  - name: sleep for 567 seconds while 2 VM build completes
+    wait_for: timeout=567
+    delegate_to: localhost
+
+  - name: Bootdisk | Normal VM creation with single HDD on Local Datastore
+    command: host create --name test5 --hostgroup-id 1 --location-id 2 --organization-id 1 --compute-resource-id 1 --compute-profile-id 1 --compute-attributes start=1 --provision-method bootdisk --medium-id 10 --partition-table-id 100
+
+  - name: Bootdisk | Normal VM creation with added HDD on Local Datastore
+    command: host create --name test6 --hostgroup-id 1 --location-id 2 --organization-id 1 --compute-resource-id 1 --compute-profile-id 1 --compute-attributes start=1 --provision-method bootdisk --medium-id 10 --partition-table-id 100 --volume name=harddisk1,datastore=Local-Ironforge,size_gb=10,thin=true,eager_zero=false,mode=persistent --volume name=harddisk2,datastore=Local-Ironforge,size_gb=10,thin=true,eager_zero=false,mode=persistent
+
+  - name: sleep for 567 seconds while 2 VM build completes
+    wait_for: timeout=567
+    delegate_to: localhost
+
+  - name: Bootdisk | Normal VM creation with single HDD on Storage Pod
+    command: host create --name test7 --hostgroup-id 1 --location-id 2 --organization-id 1 --compute-resource-id 1 --compute-profile-id 1 --compute-attributes start=1 --provision-method bootdisk --medium-id 10 --partition-table-id 100 --volume name=harddisk1,storage_pod=Synology-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent
+  
+  - name: Bootdisk | Normal VM creation with added HDD on Storage Pod
+    command: host create --name test8 --hostgroup-id 1 --location-id 2 --organization-id 1 --compute-resource-id 1 --compute-profile-id 1 --compute-attributes start=1 --provision-method bootdisk --medium-id 10 --partition-table-id 100 --volume name=harddisk1,storage_pod=Synology-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent --volume name=harddisk2,datastore=Local-Ironforge,size_gb=10,thin=true,eager_zero=false,mode=persistent
+
+  - name: sleep for 567 seconds while 2 VM build completes
+    wait_for: timeout=567
+    delegate_to: localhost
+
+  - name: Network | Normal VM creation with NIC in portgroup on Distributed Switch with VLAN
+    command: host create --name test13 --hostgroup-id 1 --location-id 2 --organization-id 1 --compute-resource-id 1 --compute-profile-id 1 --compute-attributes start=0,cluster=SysMgmt_vMotion,resource_pool=Resources --interface compute_type=VirtualVmxnet3,compute_network=VLAN-Test --volume name=harddisk1,storage_pod=Synology-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent
+
+  - name: sleep for 10 seconds while VM build completes
+    wait_for: timeout=10
+    delegate_to: localhost
+
+  - name: Network | Normal VM creation with NIC in portgroup on Distributed Switch
+    command: host create --name test12 --hostgroup-id 1 --location-id 2 --organization-id 1 --compute-resource-id 1 --compute-profile-id 1 --compute-attributes start=0,cluster=SysMgmt_vMotion,resource_pool=Resources --interface compute_type=VirtualVmxnet3,compute_network=CEE_VM_Network --volume name=harddisk1,storage_pod=Synology-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent
+  
+  - name: sleep for 10 seconds while VM build completes
+    wait_for: timeout=10
+    delegate_to: localhost

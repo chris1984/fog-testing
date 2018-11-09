@@ -9,3 +9,11 @@ cr_id: 1
 cp_id: 1
 fog_version:
 fogpatch_url:
+revert_vm:
+vcenter_hostname:
+vcenter_username:
+vcenter_password:
+vcenter_datacenter:
+vcenter_folder:
+vcenter_vm_name:
+vcenter_snapshot_name:

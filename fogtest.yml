@@ -1,8 +1,8 @@
 ---
 - name: Start fog-vsphere regression testing
-  hosts: fogtest
+  hosts: localhost
   become: true
   remote_user: root
 
   roles:
-    - chris1984.fog-testing
+    - chris1984.fog_testing

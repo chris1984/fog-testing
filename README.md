@@ -1,38 +1,61 @@
-Role Name
-=========
+# Fog-testing
 
-A brief description of the role goes here.
+Ansible role to do regression testing of fog-vsphere against Foreman
 
-Requirements
-------------
+## Build Status
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+https://travis-ci.org/chris1984/fog-testing.svg?branch=master
 
-Role Variables
---------------
+## Requirements
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+* Python >= 2.6
+* PyVmomi
+* Ansible 2.7
 
-Dependencies
-------------
+## Role Variables
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+* Variables are all in role/defaults/main.yml
 
-Example Playbook
-----------------
+```yaml
+---
+hammer_user: Username for hammer
+hammer_password: Password for hammer
+hostgroup_id: Hostgroup ID
+location_id: Location ID
+org_id: Organization ID
+cr_id: Compute Resource ID
+cp_id: Compute Profile ID
+ptable_id: Partition Table ID
+fog_version: Fog version that you are testing with on Foreman
+fogpatch_url: URL to GitHub Patch to download and test
+revert_vm: Put true if you want to revert the VM snapshot after testing
+vcenter_hostname: FQDN of vCenter
+vcenter_username: vCenter username
+vcenter_password: vCenter password
+vcenter_datacenter: Datacenter in vCenter containing the VM
+vcenter_folder: Folder path to VM
+vcenter_vm_name: VM name
+vcenter_snapshot_name: Name of snapshot to revert back to upon finish
+```
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+## Example Playbook
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```yaml
+---
+- name: Start fog-vsphere regression testing
+  hosts: localhost
+  become: true
+  remote_user: root
 
-License
--------
+  roles:
+    - chris1984.fog_testing
+```
 
-BSD
+### License
 
-Author Information
-------------------
+MIT
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+### Author Information
+
+* Chris Roberts - chrobert@redhat.com  - https://www.linkedin.com/in/croberts84/
+* Work at Redhat on the Foreman/Katello projects and also maintain fog-vsphere.

@@ -202,15 +202,3 @@
       validate_certs: no
     delegate_to: localhost
     when: revert_vm
-
-  - name: Turn off VM
-    vmware_guest_powerstate:
-      hostname: "{{ vcenter_hostname }}"
-      username: "{{ vcenter_username }}"
-      password: "{{ vcenter_password }}"
-      validate_certs: no
-      folder: "{{ vcenter_folder }}"
-      name: "{{ vcenter_vm_name }}"
-      state: shutdown-guest
-      state_change_timeout: 200
-    delegate_to: localhost

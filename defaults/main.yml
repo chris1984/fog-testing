@@ -1,13 +1,14 @@
 ---
 # defaults file for chris1984.fog-testing
-hammer_user: admin
-hammer_password: changeme
-hostgroup_id: 1
-location_id: 2
-org_id: 1
-cr_id: 1
-cp_id: 1
-ptable_id: 100
+hammer_user:
+hammer_password:
+hostgroup_id:
+location_id:
+org_id:
+cr_id:
+cp_id:
+ptable_id:
+medium_id:
 fog_version:
 fogpatch_url:
 revert_vm:
@@ -18,3 +19,4 @@ vcenter_datacenter:
 vcenter_folder:
 vcenter_vm_name:
 vcenter_snapshot_name:
+update_foreman:

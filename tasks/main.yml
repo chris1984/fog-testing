@@ -1,18 +1,6 @@
 ---
 # tasks file for chris1984.fog-testing
 # 567 seconds from vm creation to reboot for PXE/Bootdisk
-# 621 seconds from vm creation to reboot for image
-
-  - name: Turn on testing VM if it is off.
-    vmware_guest_powerstate:
-      hostname: "{{ vcenter_hostname }}"
-      username: "{{ vcenter_username }}"
-      password: "{{ vcenter_password }}"
-      validate_certs: no
-      folder: "{{ vcenter_folder }}"
-      name: "{{ vcenter_vm_name }}"
-      state: powered-on
-    delegate_to: localhost
 
   - name: Put Foreman SELinux into permissive
     selinux:
@@ -35,7 +23,7 @@
     get_url:
       dest: /root/fog.patch
       url: "{{ fogpatch_url }}"
-    when: fogpatch_url
+    when: fogpatch_url is defined
 
   - name: Appling /root/fog.patch to fog-vsphere for testing
     patch:
@@ -43,7 +31,7 @@
       remote_src: yes
       strip: 1
       basedir: /opt/theforeman/tfm/root/usr/share/gems/gems/{{ fog_version }}/
-    when: fog_version
+    when: fogpatch_url is defined
 
   - name: Create fog-testing directory in root
     file:
@@ -62,6 +50,20 @@
   - name: Wait 60 seconds for services to be fully up
     wait_for: timeout=60
     delegate_to: localhost
+
+  - name: Upgrade Katello/Foreman to latest
+    yum:
+       name: '*'
+       state: latest
+    when: update_foreman is defined
+
+  - name: Run upgrade hook since Katello/Foreman upgraded
+    command: foreman-installer --upgrade -v -s --disable-system-checks
+    args:
+      chdir: /root
+      creates: /root/fog-testing/upgrade
+    when: update_foreman is defined
+    register: installer_run
 
   - name: Generate new API cache data
     command: foreman-rake apipie:cache
@@ -163,10 +165,29 @@
     wait_for: timeout=10
     delegate_to: localhost
 
-  - name: Tar up test results
-    archive:
-      path: /root/fog-testing
-      dest: /root/testing.tgz
+  - name: Network | Normal VM creation with additional NIC
+    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test11 --hostgroup-id {{ hostgroup_id }} --location-id {{ location_id }} --organization-id {{ org_id }} --compute-resource-id {{ cr_id }} --compute-profile-id {{ cp_id }} --compute-attributes start=0,cluster=SysMgmt_vMotion,resource_pool=Resources --interface compute_type=VirtualVmxnet3,compute_network=CEE_VM_Network,primary=true --interface compute_type=VirtualVmxnet3,compute_network=VLAN-Test,primary=false --volume name=harddisk1,storage_pod=Synology-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent
+    args:
+      chdir: /root
+      creates: /root/fog-testing/test11
+
+  - name: Delete VMS before reverting snapshot to prevent DHCP conflicts
+    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host delete --name "{{ item }}"
+    args:
+      chdir: /root
+      creates: /root/fog-testing/remove_vms
+    with_items:
+      - test1.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test2.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test3.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test4.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test5.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test6.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test7.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test8.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test9.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test10.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test11.toledo.satellite.lab.eng.rdu2.redhat.com
 
   - name: Revert VM back to "Ready" snapshot
     vmware_guest_snapshot:
@@ -178,6 +199,7 @@
       name: "{{ vcenter_vm_name }}"
       state: revert
       snapshot_name: "{{ vcenter_snapshot_name }}"
+      validate_certs: no
     delegate_to: localhost
     when: revert_vm
 

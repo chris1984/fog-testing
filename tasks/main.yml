@@ -23,7 +23,7 @@
     get_url:
       dest: /root/fog.patch
       url: "{{ fogpatch_url }}"
-    when: fogpatch_url is defined
+    when: test_pr
 
   - name: Appling /root/fog.patch to fog-vsphere for testing
     patch:
@@ -31,7 +31,7 @@
       remote_src: yes
       strip: 1
       basedir: /opt/theforeman/tfm/root/usr/share/gems/gems/{{ fog_version }}/
-    when: fogpatch_url is defined
+    when: test_pr
 
   - name: Create fog-testing directory in root
     file:
@@ -55,14 +55,14 @@
     yum:
        name: '*'
        state: latest
-    when: update_foreman is defined
+    when: update_foreman
 
   - name: Run upgrade hook since Katello/Foreman upgraded
     command: foreman-installer --upgrade -v -s --disable-system-checks
     args:
       chdir: /root
       creates: /root/fog-testing/upgrade
-    when: update_foreman is defined
+    when: update_foreman
     register: installer_run
 
   - name: Generate new API cache data

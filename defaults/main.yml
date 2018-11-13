@@ -9,6 +9,7 @@ cr_id:
 cp_id:
 ptable_id:
 medium_id:
+test_pr:
 fog_version:
 fogpatch_url:
 revert_vm:

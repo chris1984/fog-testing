@@ -1,6 +1,6 @@
 ---
 - name: Start fog-vsphere regression testing
-  hosts: localhost
+  hosts: demo
   become: true
   remote_user: root
 

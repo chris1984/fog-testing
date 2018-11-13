@@ -66,7 +66,7 @@
     register: installer_run
 
   - name: Generate new API cache data
-    command: foreman-rake apipie:cache
+    command: foreman-rake apipie:cache:index
     args:
       chdir: /root
       creates: /root/fog-testing/apicache_regen

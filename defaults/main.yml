@@ -9,6 +9,8 @@ cr_id:
 cp_id:
 ptable_id:
 medium_id:
+os_id:
+image_name:
 test_pr:
 fog_version:
 fogpatch_url:

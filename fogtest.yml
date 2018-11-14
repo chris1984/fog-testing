@@ -1,8 +1,9 @@
 ---
-- name: Start fog-vsphere regression testing
-  hosts: demo
+- name: Start fog-vsphere Foreman regression testing
+  hosts: all
   become: true
   remote_user: root
+  become_method: enable
 
   roles:
     - chris1984.fog_testing

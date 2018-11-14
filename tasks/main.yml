@@ -171,6 +171,31 @@
       chdir: /root
       creates: /root/fog-testing/test11
 
+  - name: Image | Normal VM creation with single HDD on Local Datastore
+    command: host create --name test12 --organization-id {{ org_id }} --location-id {{ location_id }} --hostgroup-id {{ hostgroup_id }} --compute-resource-id {{ cr_id }} --provision-method image --image {{ image_name }} --enabled true --managed true --compute-profile-id {{ cp_id }} --operatingsystem-id {{ os_id }} --compute-attributes="start=1" --interface "managed=true,compute_type=VirtualVmxnet3,type=interface,domain_id=1,identifier=ens192,ip=10.8.106.200,subnet_id=1,primary=true,compute_network='VLAN-207'"
+    args:
+      chdir: /root
+      creates: /root/fog-testing/test12
+
+  - name: Image | Normal VM creation with added HDD on Local Datastore
+    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test13 --organization-id {{ org_id }} --location-id {{ location_id }} --hostgroup-id {{ hostgroup_id }} --compute-resource-id {{ cr_id }} --provision-method image --image {{ image_name }} --enabled true --managed true --compute-profile-id {{ cp_id }} --operatingsystem-id {{ os_id }} --compute-attributes="start=1" --interface "managed=true,compute_type=VirtualVmxnet3,type=interface,domain_id=1,identifier=ens192,ip=10.8.106.200,subnet_id=1,primary=true,compute_network='VLAN-207'"
+    args:
+      chdir: /root
+      creates: /root/fog-testing/test13
+
+  - name: Image | Normal VM creation with single HDD on Storage Pod
+    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test14 --organization-id {{ org_id }} --location-id {{ location_id }} --hostgroup-id {{ hostgroup_id }} --compute-resource-id {{ cr_id }} --provision-method image --image {{ image_name }} --enabled true --managed true --compute-profile-id {{ cp_id }} --operatingsystem-id {{ os_id }} --compute-attributes="start=1" --volume name=harddisk1,storage_pod=Synology-Cluster,size_gb=50,thin=true,eager_zero=false,mode=persistent --interface "managed=true,compute_type=VirtualVmxnet3,type=interface,domain_id=1,identifier=ens192,ip=10.8.106.200,subnet_id=1,primary=true,compute_network='VLAN-207'"
+    args:
+      chdir: /root
+      creates: /root/fog-testing/test14
+
+  - name: Image | Normal VM creation with added HDD on Storage Pod
+    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test15 --organization-id {{ org_id }} --location-id {{ location_id }} --hostgroup-id {{ hostgroup_id }} --compute-resource-id {{ cr_id }} --provision-method image --image {{ image_name }} --enabled true --managed true --compute-profile-id {{ cp_id }} --operatingsystem-id {{ os_id }} --compute-attributes="start=1" --volume name=harddisk1,storage_pod=Synology-Cluster,size_gb=50,thin=true,eager_zero=false,mode=persistent --volume name=harddisk2,storage_pod=Synology-Cluster,size_gb=50,thin=true,eager_zero=false,mode=persistent --interface "managed=true,compute_type=VirtualVmxnet3,type=interface,domain_id=1,identifier=ens192,ip=10.8.106.200,subnet_id=1,primary=true,compute_network='VLAN-207'"
+    args:
+      chdir: /root
+      creates: /root/fog-testing/test15
+    ignore_errors: True # This does not work currently so setting to ignore errors, when added will remove
+
   - name: Delete VMS before reverting snapshot to prevent DHCP conflicts
     command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host delete --name "{{ item }}"
     args:
@@ -188,6 +213,10 @@
       - test9.toledo.satellite.lab.eng.rdu2.redhat.com
       - test10.toledo.satellite.lab.eng.rdu2.redhat.com
       - test11.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test12.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test13.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test14.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test15.toledo.satellite.lab.eng.rdu2.redhat.com
 
   - name: Revert VM back to "Ready" snapshot
     vmware_guest_snapshot:

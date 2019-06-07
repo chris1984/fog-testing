@@ -1,0 +1,74 @@
+---
+
+  - name: Put Foreman SELinux into permissive
+    selinux:
+      policy: targeted
+      state: permissive
+    when: install_foreman
+
+  - name: Install Katello Nightly RPM
+    yum:
+      name: yum -y localinstall https://fedorapeople.org/groups/katello/releases/yum/nightly/katello/el7/x86_64/katello-repos-latest.rpm
+      state: present
+      validate_certs: no
+    when: install_foreman
+
+  - name: Install Foreman Nightly RPM
+    yum:
+      name: https://yum.theforeman.org/releases/nightly/el7/x86_64/foreman-release.rpm
+      state: present
+      validate_certs: no
+    when: install_foreman
+  
+  - name: Install Puppet repo
+    yum:
+      name: https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
+      state: present
+      validate_certs: no
+    when: install_foreman
+
+  - name: Install EPEL
+    yum:
+      name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+      state: present
+      validate_certs: no
+    when: install_foreman
+
+  - name: Install Foreman related packages
+    yum:
+      name: 
+        - foreman-release-scl
+        - katello
+        - foreman-vmware
+      state: present
+    when: install_foreman
+
+  - name: Update OS packages
+    yum:
+      name: '*'
+      state: latest
+    when: install_foreman
+
+  - name: Turn off Firewall
+    service:
+      name: firewalld
+      state: stopped
+      enabled: no
+    when: install_foreman
+
+  - name: Download Configs to drop in for installer
+    get_url:
+      url: http://10.8.105.2/pub/config_files.tar.gz
+      dest: /root/config_files.tar.gz
+      force: yes
+    when: install_foreman
+
+  - name: Untar config_files and place in /etc
+    command: tar --overwrite -xvf /root/config_files.tar.gz -C /
+    register: untar
+    when: install_foreman
+
+  - name: Install Katello
+    command: foreman-installer --scenario katello -v -s --disable-system-checks
+    register: install
+    when: install_foreman

@@ -1,0 +1,22 @@
+---
+  - name: Delete VMS before reverting snapshot to prevent DHCP conflicts
+    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host delete --name "{{ item }}"
+    args:
+      chdir: /root
+      creates: /root/fog-testing/remove_vms
+    with_items:
+      - test1.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test2.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test3.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test4.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test5.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test6.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test7.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test8.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test9.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test10.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test11.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test12.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test13.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test14.toledo.satellite.lab.eng.rdu2.redhat.com
+      - test15.toledo.satellite.lab.eng.rdu2.redhat.com

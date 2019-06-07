@@ -2,6 +2,10 @@
 # tasks file for chris1984.fog-testing
 # 567 seconds from vm creation to reboot for PXE/Bootdisk
 
+  - name: Install Foreman Nightly
+    import_tasks: tasks/install.yml
+    when: install_foreman
+
   - name: Put Foreman SELinux into permissive
     selinux:
       policy: targeted

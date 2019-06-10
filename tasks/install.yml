@@ -34,12 +34,21 @@
       validate_certs: no
     when: install_foreman
 
-  - name: Install Foreman related packages
+  - name: Install Foreman SCL
     yum:
-      name: 
-        - foreman-release-scl
-        - katello
-        - foreman-vmware
+      name: foreman-release-scl
+      state: present
+    when: install_foreman
+
+  - name: Install Katello
+    yum:
+      name: katello
+      state: present
+    when: install_foreman
+
+  - name: Install Foreman VMware Compute Resource
+    yum:
+      name: foreman-vmware
       state: present
     when: install_foreman
 

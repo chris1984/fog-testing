@@ -96,10 +96,10 @@
         static: yes
 
   - name: Delete VMS before reverting snapshot to prevent name taken error
-    include: remove-hosts.yaml
+    include: remove-hosts.yml
     static: yes
 
-  - name: Revert VM back to "Ready" snapshot
+  - name: Revert VM back to "Fresh_Install" snapshot
     vmware_guest_snapshot:
       hostname: "{{ vcenter_hostname }}"
       username: "{{ vcenter_username }}"

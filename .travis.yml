@@ -9,8 +9,6 @@ install:
   - echo "[default]\nroles_path = ." > ansible.cfg
 
 script:
-  # Download the role from Ansible Galaxy.
-  - ansible-galaxy install -r requirements.yml -p roles
   # Test the syntax of the playbook.
   - ansible-playbook -i inventory fogtest.yml --syntax-check
 

@@ -14,7 +14,7 @@
 
   - name: Install Foreman Nightly
     import_tasks: tasks/install.yml
-    when: install_foreman
+    when: install_foreman|bool
 
   - name: Put Foreman SELinux into permissive
     selinux:
@@ -37,7 +37,7 @@
     get_url:
       dest: /root/fog.patch
       url: "{{ fogpatch_url }}"
-    when: test_pr
+    when: test_pr|bool
 
   - name: Appling /root/fog.patch to fog-vsphere for testing
     patch:
@@ -45,7 +45,7 @@
       remote_src: yes
       strip: 1
       basedir: /opt/theforeman/tfm/root/usr/share/gems/gems/{{ fog_version }}/
-    when: test_pr
+    when: test_pr|bool
 
   - name: Create fog-testing directory in root
     file:
@@ -69,14 +69,14 @@
     yum:
        name: '*'
        state: latest
-    when: update_foreman
+    when: update_foreman|bool
 
   - name: Run upgrade hook since Katello/Foreman upgraded
     command: foreman-installer --upgrade -v -s --disable-system-checks
     args:
       chdir: /root
       creates: /root/fog-testing/upgrade
-    when: update_foreman
+    when: update_foreman|bool
     register: installer_run
 
   - name: Generate new API cache data
@@ -101,7 +101,7 @@
     rescue:
       - debug:
           msg: An error occurred during the testing,rolling back to snapshot.
-        when: is_debug is defined
+        when: is_debug is defined|bool
       - include: remove-hosts.yml
         static: yes
 
@@ -121,7 +121,7 @@
       snapshot_name: "{{ vcenter_snapshot_name }}"
       validate_certs: no
     delegate_to: localhost
-    when: revert_vm
+    when: revert_vm|bool
 
   - name: Poweroff Foreman Nightly VM
     vmware_guest_powerstate:

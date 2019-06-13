@@ -1,6 +1,16 @@
 ---
-# tasks file for chris1984.fog-testing
 # 567 seconds from vm creation to reboot for PXE/Bootdisk
+
+  - name: Poweron Foreman Nightly VM
+    vmware_guest_powerstate:
+      hostname: "{{ vcenter_hostname }}"
+      username: "{{ vcenter_username }}"
+      password: "{{ vcenter_password }}"
+      validate_certs: no
+      folder: "/{{ vcenter_datacenter }}/{{ vcenter_folder }}"
+      name: "{{ vcenter_vm_name }}"
+      state: powered-on
+    delegate_to: localhost
 
   - name: Install Foreman Nightly
     import_tasks: tasks/install.yml
@@ -112,3 +122,14 @@
       validate_certs: no
     delegate_to: localhost
     when: revert_vm
+
+  - name: Poweroff Foreman Nightly VM
+    vmware_guest_powerstate:
+      hostname: "{{ vcenter_hostname }}"
+      username: "{{ vcenter_username }}"
+      password: "{{ vcenter_password }}"
+      validate_certs: no
+      folder: "/{{ vcenter_datacenter }}/{{ vcenter_folder }}"
+      name: "{{ vcenter_vm_name }}"
+      state: powered-off
+    delegate_to: localhost

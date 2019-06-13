@@ -76,6 +76,7 @@
     command: tar --overwrite -xvf /root/config_files.tar.gz -C /
     register: untar
     when: install_foreman|bool
+    warn: false
 
   - name: Download PostgresDB
     get_url:
@@ -95,11 +96,13 @@
     command: tar --overwrite -xvf /root/mongo_data.tar.gz -C /
     register: untar
     when: install_foreman|bool
+    warn: false
 
   - name: Extract PostgresDB
     command: tar --overwrite -xvf /root/pgsql_data.tar.gz -C /
     register: untar
     when: install_foreman|bool
+    warn: false
 
   - name: Install Katello to get slate good
     command: foreman-installer --scenario katello -v -s --disable-system-checks

@@ -23,3 +23,5 @@ vcenter_vm_name:
 vcenter_snapshot_name:
 update_foreman:
 install_foreman:
+vm_timeout: 567
+override_fog:

@@ -53,6 +53,21 @@
       state: directory
       mode: 0755
 
+  - name: Download requested version of fog-vsphere
+    get_url:
+      dest: /root/v{{ test_fog_version }}.tar.gz
+      force: yes
+      url: https://github.com/fog/fog-vsphere/archive/v{{ test_fog_version }}.tar.gz
+    when: override_fog|bool
+
+  - name: Extract fog-vsphere archive into gem directory
+    unarchive:
+      dest: /opt/theforeman/tfm/root/usr/share/gems/gems/{{ fog_version }}
+      extra_opts:
+        - --overwrite
+      src: /root/v{{ test_fog_version }}.tar.gz
+    when: override_fog|bool
+
   - name: Restart Katello/Foreman services
     command: foreman-maintain service restart
     args:

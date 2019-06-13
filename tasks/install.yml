@@ -77,11 +77,6 @@
     register: untar
     when: install_foreman
 
-  - name: Install Katello
-    command: foreman-installer --scenario katello -v -s --disable-system-checks
-    register: install
-    when: install_foreman
-
   - name: Download PostgresDB
     get_url:
       url: http://10.8.105.2/pub/pgsql_data.tar.gz
@@ -96,11 +91,6 @@
       force: yes
     when: install_foreman
 
-  - name: Stop services
-    command: foreman-maintain service stop
-    register: stop_services
-    when: install_foreman
-
   - name: Extract MongoDB
     command: tar --overwrite -xvf /root/mongo_data.tar.gz -C /
     register: untar
@@ -111,12 +101,12 @@
     register: untar
     when: install_foreman
 
-  - name: Start services
-    command: foreman-maintain service start
-    register: start_services
+  - name: Install Katello to get slate good
+    command: foreman-installer --scenario katello -v -s --disable-system-checks
+    register: install
     when: install_foreman
 
-  - name: Perform upgrade with Installer to prevent any issues
+  - name: Perform upgrade with Installer to prevent any issues with the databases
     command: foreman-installer --scenario katello -v -s --disable-system-checks --upgrade
     register: upgrade
     when: install_foreman

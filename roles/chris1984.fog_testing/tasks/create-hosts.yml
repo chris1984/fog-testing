@@ -90,7 +90,7 @@
       creates: /root/fog-testing/test11
 
   - name: Image | Normal VM creation with single HDD on Local Datastore
-    command: host create --name test12 --organization-id {{ org_id }} --location-id {{ location_id }} --hostgroup-id {{ hostgroup_id }} --compute-resource-id {{ cr_id }} --provision-method image --image {{ image_name }} --enabled true --managed true --compute-profile-id {{ cp_id }} --operatingsystem-id {{ os_id }} --compute-attributes="start=1" --interface "managed=true,compute_type=VirtualVmxnet3,type=interface,domain_id=1,identifier=ens192,ip=10.8.106.200,subnet_id=1,primary=true,compute_network='VLAN-207'"
+    command: hammer -u {{ hammer_user }} -p {{ hammer_password } host create --name test12 --organization-id {{ org_id }} --location-id {{ location_id }} --hostgroup-id {{ hostgroup_id }} --compute-resource-id {{ cr_id }} --provision-method image --image {{ image_name }} --enabled true --managed true --compute-profile-id {{ cp_id }} --operatingsystem-id {{ os_id }} --compute-attributes="start=1" --interface "managed=true,compute_type=VirtualVmxnet3,type=interface,domain_id=1,identifier=ens192,ip=10.8.106.200,subnet_id=1,primary=true,compute_network='VLAN-207'"
     args:
       chdir: /root
       creates: /root/fog-testing/test12

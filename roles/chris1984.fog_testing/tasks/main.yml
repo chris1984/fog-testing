@@ -21,18 +21,6 @@
       policy: targeted
       state: permissive
 
-  - name: Grab bootdisk hammer-cli-foreman patch
-    get_url:
-      dest: /root/hammer.patch
-      url: https://github.com/chris1984/hammer-cli-foreman/commit/a5734584598433f4d7071abc1b2b9fc871a2698b.patch
-
-  - name: Apply patch to hammer-cli-foreman
-    patch:
-      src: /root/hammer.patch
-      remote_src: yes
-      dest: /opt/theforeman/tfm/root/usr/share/gems/gems/hammer_cli_foreman-0.16.pre.develop/lib/hammer_cli_foreman/hosts/common_update_options.rb
-      strip: 1
-
   - name: Downloading fog-vsphere patch for testing
     get_url:
       dest: /root/fog.patch

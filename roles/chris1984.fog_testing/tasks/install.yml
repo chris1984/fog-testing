@@ -52,6 +52,12 @@
       state: present
     when: install_foreman|bool
 
+  - name: Install Foreman Bootdisk Plugin
+    yum:
+      name: tfm-rubygem-foreman_bootdisk*
+      state: present
+    when: install_foreman|bool
+
   - name: Update OS packages
     yum:
       name: '*'

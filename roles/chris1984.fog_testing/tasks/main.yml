@@ -12,6 +12,10 @@
       state: powered-on
     delegate_to: localhost
 
+  - name: Wait two minutes for VM to be online
+    wait_for: timeout=120
+    delegate_to: localhost
+
   - name: Install Foreman Nightly
     import_tasks: tasks/install.yml
     when: install_foreman|bool

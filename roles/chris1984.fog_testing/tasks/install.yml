@@ -8,7 +8,7 @@
 
   - name: Install Katello Nightly RPM
     yum:
-      name: yum -y localinstall https://fedorapeople.org/groups/katello/releases/yum/nightly/katello/el7/x86_64/katello-repos-latest.rpm
+      name: https://fedorapeople.org/groups/katello/releases/yum/nightly/katello/el7/x86_64/katello-repos-latest.rpm
       state: present
       validate_certs: no
     when: install_foreman|bool

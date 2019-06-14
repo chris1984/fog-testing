@@ -113,7 +113,7 @@
     register: untar
     when: install_foreman|bool
 
-  - name: Install Katello to get slate good
+  - name: Run Installer to get application in a good spot
     command: foreman-installer --scenario katello -v -s --disable-system-checks
     register: install
     when: install_foreman|bool

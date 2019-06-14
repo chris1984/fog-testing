@@ -20,3 +20,4 @@
       - test13.toledo.satellite.lab.eng.rdu2.redhat.com
       - test14.toledo.satellite.lab.eng.rdu2.redhat.com
       - test15.toledo.satellite.lab.eng.rdu2.redhat.com
+    ignore_errors: yes

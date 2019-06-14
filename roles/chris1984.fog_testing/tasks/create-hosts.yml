@@ -64,7 +64,7 @@
     delegate_to: localhost
 
   - name: Network | Normal VM creation with NIC in portgroup on Distributed Switch with VLAN
-    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test9 --hostgroup-id {{ hostgroup_id }} --location-id {{ location_id }} --organization-id {{ org_id }} --compute-resource-id {{ cr_id }} --compute-profile-id {{ cp_id }} --compute-attributes start=0,cluster=SysMgmt_vMotion,resource_pool=Resources --interface compute_type=VirtualVmxnet3,compute_network=VLAN-Test --volume name=harddisk1,storage_pod=iSCSI-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent
+    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test9 --hostgroup-id {{ hostgroup_id }} --location-id {{ location_id }} --organization-id {{ org_id }} --compute-resource-id {{ cr_id }} --compute-profile-id {{ cp_id }} --compute-attributes start=0,cluster=vMotion-Cluster,resource_pool=ENG --interface compute_type=VirtualVmxnet3,compute_network=VLAN-Test --volume name=harddisk1,storage_pod=iSCSI-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent
     args:
       chdir: /root
       creates: /root/fog-testing/test9
@@ -74,7 +74,7 @@
     delegate_to: localhost
 
   - name: Network | Normal VM creation with NIC in portgroup on Distributed Switch
-    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test10 --hostgroup-id {{ hostgroup_id }} --location-id {{ location_id }} --organization-id {{ org_id }} --compute-resource-id {{ cr_id }} --compute-profile-id {{ cp_id }} --compute-attributes start=0,cluster=SysMgmt_vMotion,resource_pool=Resources --interface compute_type=VirtualVmxnet3,compute_network=CEE_VM_Network --volume name=harddisk1,storage_pod=iSCSI-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent
+    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test10 --hostgroup-id {{ hostgroup_id }} --location-id {{ location_id }} --organization-id {{ org_id }} --compute-resource-id {{ cr_id }} --compute-profile-id {{ cp_id }} --compute-attributes start=0,cluster=vMotion-Cluster,resource_pool=ENG --interface compute_type=VirtualVmxnet3,compute_network=vMotion-Network --volume name=harddisk1,storage_pod=iSCSI-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent
     args:
       chdir: /root
       creates: /root/fog-testing/test10
@@ -84,7 +84,7 @@
     delegate_to: localhost
 
   - name: Network | Normal VM creation with additional NIC
-    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test11 --hostgroup-id {{ hostgroup_id }} --location-id {{ location_id }} --organization-id {{ org_id }} --compute-resource-id {{ cr_id }} --compute-profile-id {{ cp_id }} --compute-attributes start=0,cluster=SysMgmt_vMotion,resource_pool=Resources --interface compute_type=VirtualVmxnet3,compute_network=CEE_VM_Network,primary=true --interface compute_type=VirtualVmxnet3,compute_network=VLAN-Test,primary=false --volume name=harddisk1,storage_pod=iSCSI-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent
+    command: hammer -u {{ hammer_user }} -p {{ hammer_password }} host create --name test11 --hostgroup-id {{ hostgroup_id }} --location-id {{ location_id }} --organization-id {{ org_id }} --compute-resource-id {{ cr_id }} --compute-profile-id {{ cp_id }} --compute-attributes start=0,cluster=vMotion-Cluster,resource_pool=ENG --interface compute_type=VirtualVmxnet3,compute_network=vMotion-Network,primary=true --interface compute_type=VirtualVmxnet3,compute_network=VLAN-Test,primary=false --volume name=harddisk1,storage_pod=iSCSI-Cluster,size_gb=10,thin=true,eager_zero=false,mode=persistent
     args:
       chdir: /root
       creates: /root/fog-testing/test11

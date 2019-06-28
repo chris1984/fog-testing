@@ -63,6 +63,12 @@
       name: '*'
       state: latest
     when: install_foreman|bool
+    
+  - name: Install @Base group to be compliant with docs.
+    yum:
+      name: "@base"
+      state: present
+    when: install_foreman|bool
 
   - name: Turn off Firewall
     service:

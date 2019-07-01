@@ -1,5 +1,28 @@
 ---
 
+  - name: Revert VM to "Fresh" snapshot
+    vmware_guest_snapshot:
+      hostname: "{{ vcenter_hostname }}"
+      username: "{{ vcenter_username }}"
+      password: "{{ vcenter_password }}"
+      datacenter: "{{ vcenter_datacenter }}"
+      folder: "{{ vcenter_folder }}"
+      name: "{{ vcenter_vm_name }}"
+      state: revert
+      snapshot_name: "{{ vcenter_snapshot_name }}"
+      validate_certs: no
+    delegate_to: localhost
+    when: install_foreman|bool
+
+  - name: Wait two minutes for VM to recover from snapshot restore
+    wait_for: timeout=120
+    delegate_to: localhost
+
+  - name: Ping host to make sure it is responding
+    ping: 
+    when: install_foreman|bool
+    delegate_to: localhost
+
   - name: Put Foreman SELinux into permissive
     selinux:
       policy: targeted

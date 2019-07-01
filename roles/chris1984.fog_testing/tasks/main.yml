@@ -1,7 +1,6 @@
 ---
-# 567 seconds from vm creation to reboot for PXE/Bootdisk
 
-  - name: Poweron Foreman Nightly VM
+  - name: Power on Foreman Nightly VM
     vmware_guest_powerstate:
       hostname: "{{ vcenter_hostname }}"
       username: "{{ vcenter_username }}"
@@ -20,10 +19,9 @@
     import_tasks: tasks/install.yml
     when: install_foreman|bool
 
-  - name: Put Foreman SELinux into permissive
-    selinux:
-      policy: targeted
-      state: permissive
+  - name: Upgrade Foreman Nightly
+    import_tasks: tasks/upgrade.yml
+    when: update_foreman|bool
 
   - name: Downloading fog-vsphere patch for testing
     get_url:
@@ -60,48 +58,6 @@
       src: /root/v{{ test_fog_version }}.tar.gz
     when: override_fog|bool
 
-  - name: Restart Katello/Foreman services
-    command: foreman-maintain service restart
-    args:
-      chdir: /root
-      creates: /root/fog-testing/restart_services
-    no_log: True
-    changed_when: True
-
-  - name: Wait 60 seconds for services to be fully up
-    wait_for: timeout=60
-    delegate_to: localhost
-
-  - name: Upgrade Katello/Foreman to latest
-    yum:
-       name: '*'
-       state: latest
-    when: update_foreman|bool
-
-  - name: Run upgrade hook since Katello/Foreman upgraded
-    command: foreman-installer --upgrade -v -s --disable-system-checks
-    args:
-      chdir: /root
-      creates: /root/fog-testing/upgrade
-    when: update_foreman|bool
-    register: installer_run
-
-  - name: Generate new API cache data
-    command: foreman-rake apipie:cache:index
-    args:
-      chdir: /root
-      creates: /root/fog-testing/apicache_regen
-    no_log: True
-    changed_when: True
-
-  - name: Check and make sure services are up
-    command: hammer ping
-    args:
-      chdir: /root
-      creates: /root/fog-testing/ping_check
-    register: hping
-    failed_when: hping.rc == 1
-
   - name: Start regression testing defined in create-hosts.yml
     block:
       - import_tasks: create-hosts.yml
@@ -115,20 +71,6 @@
   - name: Delete VMS before reverting snapshot to prevent name taken error
     import_tasks: remove-hosts.yml
     static: yes
-
-  - name: Revert VM back to "Fresh_Install" snapshot
-    vmware_guest_snapshot:
-      hostname: "{{ vcenter_hostname }}"
-      username: "{{ vcenter_username }}"
-      password: "{{ vcenter_password }}"
-      datacenter: "{{ vcenter_datacenter }}"
-      folder: "{{ vcenter_folder }}"
-      name: "{{ vcenter_vm_name }}"
-      state: revert
-      snapshot_name: "{{ vcenter_snapshot_name }}"
-      validate_certs: no
-    delegate_to: localhost
-    when: revert_vm|bool
 
   - name: Poweroff Foreman Nightly VM
     vmware_guest_powerstate:

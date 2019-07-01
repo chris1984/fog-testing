@@ -58,6 +58,11 @@
       src: /root/v{{ test_fog_version }}.tar.gz
     when: override_fog|bool
 
+  - name: Replace hammer config for root user to prevent timeout issues
+    copy:
+      src: "{{ role_path }}/files/foreman.yml"
+      dest: /root/.hammer/cli.modules.d/foreman.yml
+
   - name: Start regression testing defined in create-hosts.yml
     block:
       - import_tasks: create-hosts.yml

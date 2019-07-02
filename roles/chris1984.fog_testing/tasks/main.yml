@@ -23,6 +23,19 @@
     import_tasks: tasks/upgrade.yml
     when: update_foreman|bool
 
+  - name: Install Satellite latest snap
+    import_tasks: tasks/sat-install.yml
+    when: when downstream|bool and install_foreman|bool
+
+  - name: Upgrade Satellite latest snap
+    import_tasks: tasks/sat-upgrade.yml
+    when: when downstream|bool and update_foreman|bool
+
+  - name: Delete VMS before reverting snapshot to prevent name taken error
+    import_tasks: remove-hosts.yml
+    static: yes
+    ignore_errors: yes
+
   - name: Downloading fog-vsphere patch for testing
     get_url:
       dest: /root/fog.patch

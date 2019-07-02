@@ -11,6 +11,8 @@ Ansible role to do regression testing of fog-vsphere against Foreman
 * Python >= 2.7
 * PyVmomi
 * Ansible 2.8
+* vCenter 6.7
+* ESXi 6.7
 
 ## Role Variables
 
@@ -44,6 +46,7 @@ vcenter_snapshot_name: Name of snapshot to revert back to upon finish
 update_foreman: Put true if you want to perform a yum update * and then an installer run with the --upgrade flag
 install_foreman: Put true if you want to perform a fresh install of Foreman and laydown the configs/databases instead of using a snapshot
 vm_timeout: 567 # Configurable timeout for waiting before starting more VM creation tasks
+downstream: Put true if this is a Red Hat Satellite 6 build to pull in internal bits
 ```
 
 ## Example Playbook

@@ -12,7 +12,7 @@
       snapshot_name: "{{ vcenter_snapshot_name }}"
       validate_certs: no
     delegate_to: localhost
-    when: when downstream|bool and update_foreman|bool
+    when: (when downstream|bool and update_foreman|bool)
 
   - name: Wait two minutes for VM to recover from snapshot restore
     wait_for: timeout=120
@@ -20,27 +20,27 @@
 
   - name: Ping host to make sure it is responding
     ping: 
-    when: when downstream|bool and update_foreman|bool
+    when: (when downstream|bool and update_foreman|bool)
     delegate_to: localhost
 
   - name: Put Satellite SELinux into permissive
     selinux:
       policy: targeted
       state: permissive
-    when: when downstream|bool and update_foreman|bool
+    when: (when downstream|bool and update_foreman|bool)
 
   - name: Upgrade Red Hat Satellite to latest
     yum:
        name: '*'
        state: latest
-    when: when downstream|bool and update_foreman|bool
+    when: (when downstream|bool and update_foreman|bool)
 
   - name: Run upgrade hook since Red Hat Satellite upgraded
     command: satellite-installer --upgrade -v -s --disable-system-checks
     args:
       chdir: /root
       creates: /root/fog-testing/upgrade
-    when: when downstream|bool and update_foreman|bool
+    when: (when downstream|bool and update_foreman|bool)
     register: installer_run
 
   - name: Restart Red Hat Satellite services

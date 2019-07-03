@@ -1,6 +1,6 @@
 ---
 
-  - name: Revert VM to "Fresh" snapshot
+  - name: Revert VM to Fresh snapshot
     vmware_guest_snapshot:
       hostname: "{{ vcenter_hostname }}"
       username: "{{ vcenter_username }}"
@@ -12,7 +12,7 @@
       snapshot_name: "{{ vcenter_snapshot_name }}"
       validate_certs: no
     delegate_to: localhost
-    when: (when sat_install|bool)
+    when: sat_install|bool
 
   - name: Wait two minutes for VM to recover from snapshot restore
     wait_for: timeout=120
@@ -20,103 +20,103 @@
 
   - name: Ping host to make sure it is responding
     ping: 
-    when: (when sat_install|bool)
+    when: sat_install|bool
     delegate_to: localhost
 
   - name: Put Satellite SELinux into permissive
     selinux:
       policy: targeted
       state: permissive
-    when: (when sat_install|bool)
+    when: sat_install|bool
 
   - name: Install Dogfood bootstrap rpm
     yum:
       name: https://dogfood.sat.engineering.redhat.com/pub/katello-ca-consumer-latest.noarch.rpm
       state: present
       validate_certs: no
-    when: (when sat_install|bool)
+    when: sat_install|bool
 
   - name: Register to Dogfood latest snap
     command: subscription-manager register --org Sat6-CI --activationkey 'satellite-6.6.0-qa-rhel7'
     register: sub-dogfood
-    when: (when sat_install|bool)
+    when: sat_install|bool
 
   - name: Update OS packages
     yum:
       name: '*'
       state: latest
-    when: (when sat_install|bool)
+    when: sat_install|bool
     
   - name: Install @Base group to be compliant with docs.
     yum:
       name: "@base"
       state: present
-    when: (when sat_install|bool)
+    when: sat_install|bool
 
   - name: Install Red Hat Satellite
     yum:
       name: satellite
       state: present
-    when: (when sat_install|bool)
+    when: sat_install|bool
 
   - name: Turn off Firewall
     service:
       name: firewalld
       state: stopped
       enabled: no
-    when: (when sat_install|bool)
+    when: sat_install|bool
 
   - name: Download Configs to drop in for installer
     get_url:
       url: http://10.8.105.2/pub/sat/config_files.tar.gz
       dest: /root/config_files.tar.gz
       force: yes
-    when: (when sat_install|bool)
+    when: sat_install|bool
 
   - name: Untar config_files and place in /etc
     command: tar --overwrite -xvf /root/config_files.tar.gz -C /
     args:
       warn: no
     register: untar
-    when: (when sat_install|bool)
+    when: sat_install|bool
 
   - name: Download PostgresDB
     get_url:
       url: http://10.8.105.2/pub/sat/pgsql_data.tar.gz
       dest: /root/pgsql_data.tar.gz
       force: yes
-    when: (when sat_install|bool)
+    when: sat_install|bool
 
   - name: Download MongoDB
     get_url:
       url: http://10.8.105.2/pub/sat/mongo_data.tar.gz
       dest: /root/mongo_data.tar.gz
       force: yes
-    when: (when sat_install|bool)
+    when: sat_install|bool
 
   - name: Extract MongoDB
     command: tar --overwrite -xvf /root/mongo_data.tar.gz -C /
     args:
       warn: no
     register: untar
-    when: (when sat_install|bool)
+    when: sat_install|bool
 
   - name: Extract PostgresDB
     command: tar --overwrite -xvf /root/pgsql_data.tar.gz -C /
     args:
       warn: no
     register: untar
-    when: (when sat_install|bool)
+    when: sat_install|bool
 
   - name: Run Installer to get application in a good spot
     command: satellite-installer --scenario satellite -v -s --disable-system-checks
     register: install
-    when: (when sat_install|bool)
+    when: sat_install|bool
 
   - name: Perform upgrade with Installer to prevent any issues with the databases
     command: satellite-installer --scenario satellite -v -s --disable-system-checks --upgrade
     register: upgrade
-    when: (when sat_install|bool)
+    when: sat_install|bool
 
   - name: Clean up root directory of backups
     file:
@@ -126,4 +126,4 @@
       - mongo_data.tar.gz
       - pgsql_data.tar.gz
       - config_files.tar.gz
-    when: (when sat_install|bool)
+    when: sat_install|bool

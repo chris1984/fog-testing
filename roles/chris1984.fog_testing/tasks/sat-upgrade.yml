@@ -1,6 +1,6 @@
 ---
 
-  - name: Revert VM to "Upgrade" snapshot
+  - name: Revert VM to Upgrade snapshot
     vmware_guest_snapshot:
       hostname: "{{ vcenter_hostname }}"
       username: "{{ vcenter_username }}"
@@ -12,7 +12,7 @@
       snapshot_name: "{{ vcenter_snapshot_name }}"
       validate_certs: no
     delegate_to: localhost
-    when: (when sat_upgrade|bool)
+    when: sat_upgrade|bool
 
   - name: Wait two minutes for VM to recover from snapshot restore
     wait_for: timeout=120
@@ -20,27 +20,27 @@
 
   - name: Ping host to make sure it is responding
     ping: 
-    when: (when sat_upgrade|bool)
+    when: sat_upgrade|bool
     delegate_to: localhost
 
   - name: Put Satellite SELinux into permissive
     selinux:
       policy: targeted
       state: permissive
-    when: (when sat_upgrade|bool)
+    when: sat_upgrade|bool
 
   - name: Upgrade Red Hat Satellite to latest
     yum:
        name: '*'
        state: latest
-    when: (when sat_upgrade|bool)
+    when: sat_upgrade|bool
 
   - name: Run upgrade hook since Red Hat Satellite upgraded
     command: satellite-installer --upgrade -v -s --disable-system-checks
     args:
       chdir: /root
       creates: /root/fog-testing/upgrade
-    when: (when sat_upgrade|bool)
+    when: sat_upgrade|bool
     register: installer_run
 
   - name: Restart Red Hat Satellite services

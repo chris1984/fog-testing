@@ -25,11 +25,11 @@
 
   - name: Install Satellite latest snap
     import_tasks: tasks/sat-install.yml
-    when: (when sat_install|bool)
+    when: sat_install|bool
 
   - name: Upgrade Satellite latest snap
     import_tasks: tasks/sat-upgrade.yml
-    when: (when sat_upgrade|bool)
+    when: sat_upgrade|bool
 
   - name: Delete VMS before reverting snapshot to prevent name taken error
     import_tasks: remove-hosts.yml
